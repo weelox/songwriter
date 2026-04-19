@@ -102,12 +102,35 @@ const learnRecommendations = [
     url: "https://learn.trainstation.se/resources/teasers/category-3/pdf/38/bc35165ce66ee77b8373663dbfaec36d-1586496966024.pdf",
     tags: ["text", "topic", "all", "pdf"],
     kind: "pdf",
+    thumb: "assets/pdf-covers/text-berattelse.svg",
   },
   {
     title: "Ackord och harmonier (PDF)",
     url: "https://learn.trainstation.se/resources/teasers/category-3/pdf/35/2a3cde8b26745accbae8a70c81810421-1586496500340.pdf",
     tags: ["musik", "all", "pdf"],
     kind: "pdf",
+    thumb: "assets/pdf-covers/ackord-harmonier.svg",
+  },
+  {
+    title: "Hur skriver man en låt? Crash course",
+    url: "https://www.youtube.com/watch?v=c8bdDYAvyBc",
+    tags: ["all", "text", "topic"],
+    kind: "video",
+    thumb: "https://i.ytimg.com/vi/c8bdDYAvyBc/hqdefault.jpg",
+  },
+  {
+    title: "10 Lyric Writing Tips for Beginners",
+    url: "https://www.youtube.com/watch?v=owNbrxOGyeU",
+    tags: ["all", "text", "topic"],
+    kind: "video",
+    thumb: "https://i.ytimg.com/vi/owNbrxOGyeU/hqdefault.jpg",
+  },
+  {
+    title: "Spela in röst/sång (PDF)",
+    url: "https://learn.trainstation.se/resources/teasers/category-3/pdf/40/9d3c09283454035ba1d3276f65ea722c-1586497749705.pdf",
+    tags: ["all", "pdf", "produktion"],
+    kind: "pdf",
+    thumb: "assets/pdf-covers/spela-in-rost.svg",
   },
 ];
 
@@ -144,7 +167,6 @@ const el = {
   stepLabel: document.getElementById("step-label"),
   progressFill: document.getElementById("progress-fill"),
   summaryContent: document.getElementById("summary-content"),
-  recommendationIntro: document.getElementById("recommendation-intro"),
   recommendationList: document.getElementById("recommendation-list"),
   generateAiDraft: document.getElementById("generate-ai-draft"),
   useAiDraft: document.getElementById("use-ai-draft"),
@@ -322,8 +344,11 @@ function pickRecommendations() {
   if (topic.includes("beat") || topic.includes("trumma")) tags.add("beat");
   tags.add("topic");
 
-  const selected = learnRecommendations.filter((item) => item.tags.some((tag) => tags.has(tag))).slice(0, 6);
-  return selected.length > 0 ? selected : learnRecommendations.slice(0, 4);
+  const selected = learnRecommendations.filter((item) => item.tags.some((tag) => tags.has(tag)));
+  const fallback = learnRecommendations.filter(
+    (item) => !selected.some((chosen) => chosen.url === item.url)
+  );
+  return [...selected, ...fallback].slice(0, 9);
 }
 
 function renderSummary() {
@@ -344,17 +369,13 @@ function renderSummary() {
     )
     .join("");
 
-  el.recommendationIntro.textContent = `Baserat på dina svar (${state.answers.genre || "din genre"} / ${
-    state.answers.topic || "ditt tema"
-  }) kan du börja med dessa resurser:`;
-
   const recs = pickRecommendations();
   el.recommendationList.innerHTML = recs
     .map((r) => {
       const isVideo = r.kind === "video";
-      const media = isVideo
+      const media = r.thumb
         ? `<img src="${r.thumb}" alt="${escapeHtml(r.title)}" loading="lazy" />`
-        : `<div class="media-fallback">PDF</div>`;
+        : `<div class="media-fallback">${isVideo ? "Video" : "Dokument"}</div>`;
       return `
         <li class="media-card-item">
           <a class="media-card" href="${r.url}" target="_blank" rel="noopener">

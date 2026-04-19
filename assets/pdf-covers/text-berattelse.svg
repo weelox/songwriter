@@ -1,0 +1,17 @@
+<svg width="960" height="540" viewBox="0 0 960 540" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E4740"/>
+      <stop offset="1" stop-color="#7DA99B"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="540" fill="url(#bg)"/>
+  <circle cx="790" cy="120" r="180" fill="#B9D2CA" fill-opacity="0.25"/>
+  <rect x="74" y="86" width="182" height="220" rx="16" fill="#E4EFEA" fill-opacity="0.9"/>
+  <rect x="104" y="132" width="122" height="14" rx="7" fill="#2A6157"/>
+  <rect x="104" y="165" width="108" height="12" rx="6" fill="#4E7A71"/>
+  <rect x="104" y="194" width="96" height="12" rx="6" fill="#4E7A71"/>
+  <text x="74" y="400" fill="#F7FFFB" font-family="Manrope, Arial" font-size="26" font-weight="700">LEARN PDF</text>
+  <text x="74" y="445" fill="#F7FFFB" font-family="Syne, Arial" font-size="56" font-weight="800">Text &amp;</text>
+  <text x="74" y="500" fill="#F7FFFB" font-family="Syne, Arial" font-size="56" font-weight="800">Berättelse</text>
+</svg>

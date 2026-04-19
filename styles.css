@@ -8,7 +8,9 @@
   --accent-strong: #18463d;
   --accent-soft: #dce8e4;
   --danger: #9e2b2b;
-  --radius: 0px;
+  --radius: 16px;
+  --radius-lg: 24px;
+  --radius-sm: 12px;
   --shadow: 0 22px 44px rgba(19, 24, 22, 0.13);
 }
 
@@ -117,6 +119,8 @@ body[data-theme="b"] .bg-glow-2 {
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.36);
   box-shadow: var(--shadow);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
 body[data-theme="b"] .app-shell::after {
@@ -171,7 +175,7 @@ body[data-theme="b"] .hero h1 {
   background: var(--panel);
   backdrop-filter: blur(8px);
   border-top: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: 0;
   box-shadow: none;
   padding: 24px 28px;
   animation: rise 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -243,7 +247,7 @@ body[data-theme="b"] .hero h1 {
 .start-card {
   background: rgba(255, 255, 255, 0.76);
   border: 1px solid var(--line);
-  border-radius: 0;
+  border-radius: var(--radius);
   padding: 18px;
   min-height: 160px;
   display: flex;
@@ -272,7 +276,7 @@ body[data-theme="b"] .hero h1 {
 .progress-bar {
   width: 100%;
   height: 8px;
-  border-radius: 0;
+  border-radius: 999px;
   background: rgba(19, 24, 22, 0.1);
   overflow: hidden;
 }
@@ -282,7 +286,7 @@ body[data-theme="b"] .hero h1 {
   height: 100%;
   width: 25%;
   background: linear-gradient(90deg, var(--accent), var(--accent-strong));
-  border-radius: 0;
+  border-radius: 999px;
   transition: width 0.25s ease;
 }
 
@@ -303,7 +307,7 @@ textarea,
 input[type="text"] {
   width: 100%;
   border: 1px solid rgba(19, 24, 22, 0.22);
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   padding: 14px 16px;
   font: inherit;
   background: rgba(255, 255, 255, 0.96);
@@ -334,7 +338,7 @@ input[type="text"]:focus {
 
 .btn {
   border: 1px solid transparent;
-  border-radius: 0;
+  border-radius: 999px;
   padding: 11px 16px;
   font-weight: 700;
   font: inherit;
@@ -389,7 +393,7 @@ input[type="text"]:focus {
 
 .summary-item {
   padding: 12px;
-  border-radius: 0;
+  border-radius: var(--radius);
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.72);
 }
@@ -413,7 +417,7 @@ input[type="text"]:focus {
 
 .assist-card {
   border: 1px dashed rgba(19, 24, 22, 0.22);
-  border-radius: 0;
+  border-radius: var(--radius);
   padding: 14px;
   margin: 14px 0;
   background: rgba(255, 255, 255, 0.6);
@@ -520,7 +524,7 @@ body[data-theme="b"] .panel {
 .random-line {
   margin-top: 10px;
   padding: 10px;
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   background: rgba(31, 90, 79, 0.12);
   min-height: 24px;
 }
@@ -534,7 +538,7 @@ body[data-theme="b"] .panel {
 .lyrics-preview {
   background: rgba(19, 24, 22, 0.04);
   border: 1px solid var(--line);
-  border-radius: 0;
+  border-radius: var(--radius);
   padding: 16px;
   white-space: pre-wrap;
   line-height: 1.58;
@@ -551,7 +555,7 @@ body[data-theme="b"] .panel {
   margin-top: 18px;
   background: rgba(31, 90, 79, 0.1);
   border: 1px solid rgba(19, 24, 22, 0.14);
-  border-radius: 0;
+  border-radius: var(--radius);
   padding: 14px;
 }
 
@@ -582,25 +586,23 @@ body[data-theme="b"] .resource-box a {
 
 #recommendation-list.resource-list {
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(210px, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  overflow-x: auto;
-  padding: 4px 2px 10px;
+  overflow: visible;
+  padding: 4px 0 0;
   list-style: none;
-  margin: 10px 0 0;
-  scroll-snap-type: x mandatory;
+  margin: 12px 0 0;
 }
 
 .media-card-item {
   margin: 0;
-  scroll-snap-align: start;
 }
 
 .media-card {
   display: block;
   text-decoration: none;
   color: inherit;
+  border-radius: var(--radius);
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.72);
   transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
@@ -615,6 +617,7 @@ body[data-theme="b"] .resource-box a {
 .media-thumb {
   aspect-ratio: 16 / 9;
   overflow: hidden;
+  border-radius: calc(var(--radius) - 2px) calc(var(--radius) - 2px) 0 0;
   background: linear-gradient(140deg, #d4e0dc, #c4d4cf);
 }
 
@@ -675,6 +678,10 @@ body[data-theme="b"] .media-fallback {
   .summary-grid {
     grid-template-columns: 1fr;
   }
+
+  #recommendation-list.resource-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 760px) {
@@ -703,7 +710,7 @@ body[data-theme="b"] .media-fallback {
   }
 
   #recommendation-list.resource-list {
-    grid-auto-columns: minmax(180px, 86vw);
+    grid-template-columns: 1fr;
   }
 
   .btn {
