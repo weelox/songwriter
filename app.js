@@ -157,6 +157,14 @@ const el = {
   soundToggle: document.getElementById("sound-toggle"),
 };
 
+const panels = {
+  start: el.startPanel,
+  quiz: el.quizPanel,
+  summary: el.summaryPanel,
+  writing: el.writingPanel,
+  final: el.finalPanel,
+};
+
 const audioCtx = window.AudioContext ? new AudioContext() : null;
 
 function playClickTone(freq = 520, duration = 0.07) {
@@ -212,11 +220,11 @@ function resetStateToDefault() {
 
 function setScreen(screen) {
   state.currentScreen = screen;
-  el.startPanel.classList.toggle("hidden", screen !== "start");
-  el.quizPanel.classList.toggle("hidden", screen !== "quiz");
-  el.summaryPanel.classList.toggle("hidden", screen !== "summary");
-  el.writingPanel.classList.toggle("hidden", screen !== "writing");
-  el.finalPanel.classList.toggle("hidden", screen !== "final");
+  Object.entries(panels).forEach(([key, panel]) => {
+    const isActive = key === screen;
+    panel.classList.toggle("hidden", !isActive);
+    panel.classList.toggle("panel-show", isActive);
+  });
   saveState();
 }
 
