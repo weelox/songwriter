@@ -19,20 +19,14 @@ const questions = [
     help: "Exempelvis: Något som hänt? Någon person? Något du tänker mycket på? Något som stör dig?",
     placeholder: "Skriv vad du vill skriva om...",
   },
-  {
-    id: "focus",
-    title: "4. Välj en sak att utgå från",
-    help: "Ta det du valde i fråga 3 och välj en konkret sak: ett minne, en händelse, en mening någon sagt, eller en känsla du haft nyligen.",
-    placeholder: "Skriv en konkret sak du vill utgå från...",
-  },
 ];
 
 const writingSteps = [
   {
-    id: "intro",
-    title: "Intro (valfritt)",
-    subtitle: "Sätt tonen med 1-3 rader.",
-    tip: "Tips: Måla en snabb bild av plats, tid eller känsla. Håll det enkelt.",
+    id: "focus",
+    title: "Välj en konkret sak",
+    subtitle: "",
+    tip: "Välj en konkret sak: ett minne, en händelse, en mening någon sagt, eller en känsla du haft nyligen.",
   },
   {
     id: "verse1",
@@ -70,7 +64,6 @@ const state = {
   },
   writingIndex: 0,
   lyrics: {
-    intro: "",
     verse1: "",
     chorus: "",
     verse2: "",
@@ -94,6 +87,7 @@ const el = {
   writingStepTitle: document.getElementById("writing-step-title"),
   writingStepSubtitle: document.getElementById("writing-step-subtitle"),
   writingTip: document.getElementById("writing-tip"),
+  writingFieldLabel: document.getElementById("writing-field-label"),
   writingTextarea: document.getElementById("writing-textarea"),
   prevWriting: document.getElementById("prev-writing"),
   nextWriting: document.getElementById("next-writing"),
@@ -245,13 +239,38 @@ function renderSummary() {
 
 function renderWritingStep() {
   const step = writingSteps[state.writingIndex];
+  const isFocusStep = step.id === "focus";
+  const vibe = state.answers.vibe || "en vibe";
+  const genre = state.answers.genre || "en genre";
+  const topic = state.answers.topic || "ett tema";
+
   el.writingStepTitle.textContent = step.title;
-  el.writingStepSubtitle.textContent = step.subtitle;
+  el.writingStepSubtitle.textContent = isFocusStep
+    ? `Eftersom du har valt vibe "${vibe}" och genren "${genre}", med tema "${topic}", välj nu en konkret sak att utgå från.`
+    : step.subtitle;
   el.writingTip.textContent = step.tip;
-  el.writingTextarea.value = state.lyrics[step.id] || "";
+
+  if (isFocusStep) {
+    el.writingFieldLabel.textContent = "Din konkreta startpunkt";
+    el.writingTextarea.placeholder = "Skriv en konkret sak du vill utgå från...";
+    el.writingTextarea.value = state.answers.focus || "";
+    el.randomLine.classList.add("hidden");
+    el.randomResult.classList.add("hidden");
+  } else {
+    el.writingFieldLabel.textContent = "Din text";
+    el.writingTextarea.placeholder = "Skriv här...";
+    el.writingTextarea.value = state.lyrics[step.id] || "";
+    el.randomLine.classList.remove("hidden");
+    el.randomResult.classList.remove("hidden");
+  }
+
   el.prevWriting.textContent = state.writingIndex === 0 ? "Till quiz" : "Tillbaka";
-  el.nextWriting.textContent =
-    state.writingIndex === writingSteps.length - 1 ? "Förhandsvisa låten" : "Nästa";
+  if (isFocusStep) {
+    el.nextWriting.textContent = "Börja med vers 1";
+  } else {
+    el.nextWriting.textContent =
+      state.writingIndex === writingSteps.length - 1 ? "Förhandsvisa låten" : "Nästa";
+  }
   el.randomResult.textContent = "";
 }
 
@@ -303,9 +322,6 @@ function buildSongText() {
     `Vibe: ${state.answers.vibe || "-"}`,
     `Tema: ${state.answers.topic || "-"}`,
     `Konkret utgångspunkt: ${state.answers.focus || "-"}`,
-    ``,
-    `INTRO`,
-    state.lyrics.intro || "(tom)",
     ``,
     `VERS 1`,
     state.lyrics.verse1 || "(tom)",
@@ -420,7 +436,11 @@ el.startWriting.addEventListener("click", () => {
 
 el.writingTextarea.addEventListener("input", (event) => {
   const currentStep = writingSteps[state.writingIndex];
-  state.lyrics[currentStep.id] = event.target.value;
+  if (currentStep.id === "focus") {
+    state.answers.focus = event.target.value;
+  } else {
+    state.lyrics[currentStep.id] = event.target.value;
+  }
   saveState();
 });
 
@@ -438,7 +458,18 @@ el.prevWriting.addEventListener("click", () => {
 
 el.nextWriting.addEventListener("click", () => {
   const currentStep = writingSteps[state.writingIndex];
-  state.lyrics[currentStep.id] = el.writingTextarea.value.trim();
+  if (currentStep.id === "focus") {
+    const text = el.writingTextarea.value.trim();
+    if (!text) {
+      el.writingTextarea.focus();
+      el.writingTextarea.style.borderColor = "#a52d2d";
+      return;
+    }
+    el.writingTextarea.style.borderColor = "";
+    state.answers.focus = text;
+  } else {
+    state.lyrics[currentStep.id] = el.writingTextarea.value.trim();
+  }
 
   if (state.writingIndex === writingSteps.length - 1) {
     renderFinal();
@@ -496,7 +527,7 @@ el.resetAll.addEventListener("click", () => {
     questionIndex: 0,
     answers: { vibe: "", genre: "", topic: "", focus: "" },
     writingIndex: 0,
-    lyrics: { intro: "", verse1: "", chorus: "", verse2: "", outro: "" },
+    lyrics: { verse1: "", chorus: "", verse2: "", outro: "" },
     currentScreen: "quiz",
     soundOn: true,
   });
