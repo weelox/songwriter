@@ -1,4 +1,6 @@
 const STORAGE_KEY = "songwriter-guide-v2";
+const AI_TEXT_ENDPOINT = "https://text.pollinations.ai/openai";
+const AI_TEXT_FALLBACK = "https://text.pollinations.ai/";
 
 const questions = [
   {
@@ -472,31 +474,61 @@ function randomStarter() {
   playClickTone(760, 0.09);
 }
 
-function generateAiDraftFromAnswers() {
+function buildAiSongPrompt() {
   const vibe = state.answers.vibe || "stark";
   const genre = state.answers.genre || "fri";
   const topic = state.answers.topic || "livet";
-  const focus = state.answers.focus || `ett minne kopplat till ${topic}`;
-
-  const verse1 = [
-    `Det började med ${focus}, allt blev så tydligt då,`,
-    `Jag gick runt med ${vibe} i bröstet men försökte ändå stå,`,
-    `I min ${genre}-värld blev varje tanke som ett spår.`
+  return [
+    "Du är en svensk låtskrivarcoach för ungdomar.",
+    `Skriv ett första låtutkast på svenska med vibe: "${vibe}", genre: "${genre}", tema: "${topic}".`,
+    "Texten ska vara enkel, äkta och lätt att bygga vidare på.",
+    "Skriv max 3 rader per sektion.",
+    "Använd exakt detta format, utan extra rubriker eller förklaringar:",
+    "FOCUS: <en konkret sak att utgå från i en mening>",
+    "VERS1:",
+    "<rad 1>",
+    "<rad 2>",
+    "<rad 3>",
+    "REFRÄNG:",
+    "<rad 1>",
+    "<rad 2>",
+    "<rad 3>",
+    "VERS2:",
+    "<rad 1>",
+    "<rad 2>",
+    "<rad 3>",
+    "OUTRO:",
+    "<rad 1>",
   ].join("\n");
+}
 
-  const chorus = [
-    `Det här är min röst, det här är ${topic},`,
-    `Jag håller inget inne, jag skriver det jag bär på.`,
-    `Om natten blir för tung så sjunger jag ändå.`
-  ].join("\n");
+function sectionFrom(text, startLabel, endLabel) {
+  const start = text.indexOf(startLabel);
+  if (start === -1) return "";
+  const from = start + startLabel.length;
+  const end = endLabel ? text.indexOf(endLabel, from) : -1;
+  const chunk = end === -1 ? text.slice(from) : text.slice(from, end);
+  return chunk.trim();
+}
 
-  const verse2 = [
-    `Nu ser jag allt från en ny vinkel, jag vågar ta plats,`,
-    `Varje rad jag skriver gör det lättare att andas,`,
-    `Jag låter sanningen höras, även när den skaver.`
-  ].join("\n");
+function parseAiDraft(rawText) {
+  const text = String(rawText || "")
+    .replace(/FOCUS\s*:/gi, "FOCUS:")
+    .replace(/VERS\s*1\s*:/gi, "VERS1:")
+    .replace(/VERS\s*2\s*:/gi, "VERS2:")
+    .replace(/REFRANG\s*:/gi, "REFRÄNG:")
+    .replace(/CHORUS\s*:/gi, "REFRÄNG:")
+    .replace(/VERSE1\s*:/gi, "VERS1:")
+    .replace(/VERSE2\s*:/gi, "VERS2:");
+  const focus = sectionFrom(text, "FOCUS:", "VERS1:") || `ett minne kopplat till ${state.answers.topic || "din känsla"}`;
+  const verse1 = sectionFrom(text, "VERS1:", "REFRÄNG:") || "";
+  const chorus = sectionFrom(text, "REFRÄNG:", "VERS2:") || "";
+  const verse2 = sectionFrom(text, "VERS2:", "OUTRO:") || "";
+  const outro = sectionFrom(text, "OUTRO:", "") || "";
 
-  const outro = `Jag skriver klart, tar ett djupt andetag, och går vidare.`;
+  const genre = state.answers.genre || "fri";
+  const vibe = state.answers.vibe || "-";
+  const topic = state.answers.topic || "-";
 
   return {
     focus,
@@ -510,18 +542,48 @@ function generateAiDraftFromAnswers() {
       `Tema: ${topic}`,
       ``,
       `VERS 1`,
-      verse1,
+      verse1 || "(saknas i svar)",
       ``,
       `REFRÄNG`,
-      chorus,
+      chorus || "(saknas i svar)",
       ``,
       `VERS 2`,
-      verse2,
+      verse2 || "(saknas i svar)",
       ``,
       `OUTRO`,
-      outro,
+      outro || "(saknas i svar)",
     ].join("\n"),
   };
+}
+
+async function fetchAiDraftLive() {
+  const prompt = buildAiSongPrompt();
+
+  const primary = await fetch(AI_TEXT_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "openai",
+      messages: [
+        { role: "system", content: "Du är en trygg, enkel och kreativ låtskrivarcoach." },
+        { role: "user", content: prompt },
+      ],
+      temperature: 0.8,
+    }),
+  });
+
+  if (primary.ok) {
+    const data = await primary.json();
+    const content = data?.choices?.[0]?.message?.content;
+    if (content && typeof content === "string") return parseAiDraft(content);
+  }
+
+  const fallback = await fetch(`${AI_TEXT_FALLBACK}${encodeURIComponent(prompt)}?model=openai`);
+  if (!fallback.ok) {
+    throw new Error(`AI-endpoint svarade med ${fallback.status}`);
+  }
+  const fallbackText = await fallback.text();
+  return parseAiDraft(fallbackText);
 }
 
 function buildSongText() {
@@ -661,15 +723,30 @@ el.editAnswers.addEventListener("click", () => {
   setScreen("quiz");
 });
 
-el.generateAiDraft.addEventListener("click", () => {
-  const draft = generateAiDraftFromAnswers();
-  state.aiDraft = draft.text;
-  state.aiDraftParsed = draft;
-  el.aiDraftOutput.textContent = draft.text;
-  el.aiDraftOutput.classList.remove("hidden");
-  el.useAiDraft.classList.remove("hidden");
-  saveState();
-  playClickTone(760, 0.1);
+el.generateAiDraft.addEventListener("click", async () => {
+  const originalLabel = el.generateAiDraft.textContent;
+  el.generateAiDraft.disabled = true;
+  el.generateAiDraft.textContent = "Genererar...";
+
+  try {
+    const draft = await fetchAiDraftLive();
+    state.aiDraft = draft.text;
+    state.aiDraftParsed = draft;
+    el.aiDraftOutput.textContent = draft.text;
+    el.aiDraftOutput.classList.remove("hidden");
+    el.useAiDraft.classList.remove("hidden");
+    saveState();
+    playClickTone(760, 0.1);
+  } catch (error) {
+    el.aiDraftOutput.textContent =
+      "Kunde inte hämta AI-utkast just nu. Testa igen om en stund.";
+    el.aiDraftOutput.classList.remove("hidden");
+    el.useAiDraft.classList.add("hidden");
+    console.error("AI draft error:", error);
+  } finally {
+    el.generateAiDraft.disabled = false;
+    el.generateAiDraft.textContent = originalLabel;
+  }
 });
 
 el.useAiDraft.addEventListener("click", () => {
