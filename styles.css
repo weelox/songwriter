@@ -167,11 +167,11 @@ body[data-theme="b"] .app-shell::after {
   background: linear-gradient(
     120deg,
     rgba(255, 255, 255, 0) 20%,
-    rgba(255, 255, 255, 0.22) 45%,
+    rgba(255, 255, 255, 0.14) 45%,
     rgba(255, 255, 255, 0) 70%
   );
   transform: translateX(-120%);
-  animation: sheen 9s ease-in-out infinite;
+  animation: sheen 20s ease-in-out infinite;
 }
 
 .hero {
