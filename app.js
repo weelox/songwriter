@@ -14,16 +14,16 @@ const questions = [
     placeholder: "Skriv genre...",
   },
   {
-    id: "feel",
-    title: "3. Hur vill du att låten ska kännas?",
-    help: "Utgå från dig själv, inte från vad du tror att andra vill höra.",
-    placeholder: "Skriv med dina ord...",
+    id: "topic",
+    title: "3. Vad vill du skriva om?",
+    help: "Exempelvis: Något som hänt? Någon person? Något du tänker mycket på? Något som stör dig?",
+    placeholder: "Skriv vad du vill skriva om...",
   },
   {
-    id: "trigger",
-    title: "4. Vad får dig att känna den känslan?",
-    help: "Till exempel något som hänt, en person, en tanke eller något som stör dig.",
-    placeholder: "Skriv vad som triggar känslan...",
+    id: "focus",
+    title: "4. Välj en sak att utgå från",
+    help: "Ta det du valde i fråga 3 och välj en konkret sak: ett minne, en händelse, en mening någon sagt, eller en känsla du haft nyligen.",
+    placeholder: "Skriv en konkret sak du vill utgå från...",
   },
 ];
 
@@ -65,8 +65,8 @@ const state = {
   answers: {
     vibe: "",
     genre: "",
-    feel: "",
-    trigger: "",
+    topic: "",
+    focus: "",
   },
   writingIndex: 0,
   lyrics: {
@@ -144,6 +144,8 @@ function loadState() {
     const parsed = JSON.parse(raw);
     Object.assign(state, parsed);
     state.answers = { ...state.answers, ...parsed.answers };
+    if (!state.answers.topic && parsed?.answers?.feel) state.answers.topic = parsed.answers.feel;
+    if (!state.answers.focus && parsed?.answers?.trigger) state.answers.focus = parsed.answers.trigger;
     state.lyrics = { ...state.lyrics, ...parsed.lyrics };
   } catch {
     localStorage.removeItem(STORAGE_KEY);
@@ -255,24 +257,24 @@ function renderWritingStep() {
 
 function randomStarter() {
   const vibe = state.answers.vibe || "känslan";
-  const trigger = state.answers.trigger || "det du bär på";
-  const feel = state.answers.feel || "det du känner";
+  const focus = state.answers.focus || "det du bär på";
+  const topic = state.answers.topic || "det du känner";
   const genre = state.answers.genre || "din stil";
   const step = writingSteps[state.writingIndex].id;
 
   const bank = {
     intro: [
       `Ikväll låter allt som ${vibe}, och jag är mitt i det.`,
-      `Det började i tystnad, men nu känns ${feel.toLowerCase()}.`,
-      `I min ${genre}-värld är sanningen enkel: ${trigger}.`,
+      `Det började i tystnad, men nu handlar allt om ${topic.toLowerCase()}.`,
+      `I min ${genre}-värld är sanningen enkel: ${focus}.`,
     ],
     verse1: [
-      `Jag minns exakt när allt vände, det var då ${trigger}.`,
+      `Jag minns exakt när allt vände, det var då ${focus}.`,
       `Steg för steg försökte jag andas, men ${vibe} tog över.`,
-      `Ingen såg vad som hände inom mig när ${trigger}.`,
+      `Ingen såg vad som hände inom mig när ${focus}.`,
     ],
     chorus: [
-      `Det här är jag, det här är ${feel.toLowerCase()}, jag gömmer inget mer.`,
+      `Det här är jag, det här är ${topic.toLowerCase()}, jag gömmer inget mer.`,
       `${vibe} i bröstet, men jag står kvar ändå.`,
       `Om du hör mig nu, hör hela mig.`,
     ],
@@ -299,8 +301,8 @@ function buildSongText() {
     `Titel: Min låt (${state.answers.genre || "fri genre"})`,
     ``,
     `Vibe: ${state.answers.vibe || "-"}`,
-    `Känsla: ${state.answers.feel || "-"}`,
-    `Trigger: ${state.answers.trigger || "-"}`,
+    `Tema: ${state.answers.topic || "-"}`,
+    `Konkret utgångspunkt: ${state.answers.focus || "-"}`,
     ``,
     `INTRO`,
     state.lyrics.intro || "(tom)",
@@ -492,7 +494,7 @@ el.resetAll.addEventListener("click", () => {
   localStorage.removeItem(STORAGE_KEY);
   Object.assign(state, {
     questionIndex: 0,
-    answers: { vibe: "", genre: "", feel: "", trigger: "" },
+    answers: { vibe: "", genre: "", topic: "", focus: "" },
     writingIndex: 0,
     lyrics: { intro: "", verse1: "", chorus: "", verse2: "", outro: "" },
     currentScreen: "quiz",
