@@ -59,41 +59,55 @@ const learnRecommendations = [
     title: "Hur skriver man en låttext?",
     url: "https://www.youtube.com/watch?v=aLkFddDAu4E",
     tags: ["text", "topic", "all"],
+    kind: "video",
+    thumb: "https://i.ytimg.com/vi/aLkFddDAu4E/hqdefault.jpg",
   },
   {
     title: "8 tips för att skriva en låttext",
     url: "https://www.youtube.com/watch?v=w5taIsBBde0",
     tags: ["text", "topic", "all"],
+    kind: "video",
+    thumb: "https://i.ytimg.com/vi/w5taIsBBde0/hqdefault.jpg",
   },
   {
     title: "How To Write A Rap",
     url: "https://www.youtube.com/watch?v=cLUK8ob-GMQ",
     tags: ["rap", "hiphop"],
+    kind: "video",
+    thumb: "https://i.ytimg.com/vi/cLUK8ob-GMQ/hqdefault.jpg",
   },
   {
     title: "How To Write Lyrics For A Song",
     url: "https://www.youtube.com/watch?v=9G4zOiWr7Kw",
     tags: ["pop", "text", "all"],
+    kind: "video",
+    thumb: "https://i.ytimg.com/vi/9G4zOiWr7Kw/hqdefault.jpg",
   },
   {
     title: "Skapa grunden till ditt hiphop-beat",
     url: "https://www.youtube.com/watch?v=Zqrwri8rnsQ",
     tags: ["rap", "hiphop", "beat"],
+    kind: "video",
+    thumb: "https://i.ytimg.com/vi/Zqrwri8rnsQ/hqdefault.jpg",
   },
   {
     title: "Logic Pro beginner tutorial",
     url: "https://www.youtube.com/watch?v=xKWdaSf9y5U&t=77s",
     tags: ["pop", "rock", "produktion"],
+    kind: "video",
+    thumb: "https://i.ytimg.com/vi/xKWdaSf9y5U/hqdefault.jpg",
   },
   {
     title: "Text & Berättelse (PDF)",
     url: "https://learn.trainstation.se/resources/teasers/category-3/pdf/38/bc35165ce66ee77b8373663dbfaec36d-1586496966024.pdf",
     tags: ["text", "topic", "all", "pdf"],
+    kind: "pdf",
   },
   {
     title: "Ackord och harmonier (PDF)",
     url: "https://learn.trainstation.se/resources/teasers/category-3/pdf/35/2a3cde8b26745accbae8a70c81810421-1586496500340.pdf",
     tags: ["musik", "all", "pdf"],
+    kind: "pdf",
   },
 ];
 
@@ -313,12 +327,18 @@ function pickRecommendations() {
 }
 
 function renderSummary() {
-  el.summaryContent.innerHTML = questions
+  const summaryItems = [
+    { index: "1.", label: "Vibe", value: state.answers.vibe },
+    { index: "2.", label: "Genre", value: state.answers.genre },
+    { index: "3.", label: "About", value: state.answers.topic },
+  ];
+
+  el.summaryContent.innerHTML = summaryItems
     .map(
-      (q) => `
+      (item) => `
       <div class="summary-item">
-        <strong>${q.title}</strong>
-        <span>${escapeHtml(state.answers[q.id] || "-")}</span>
+        <div class="summary-meta">${item.index} ${item.label}</div>
+        <span>${escapeHtml(item.value || "-")}</span>
       </div>
     `
     )
@@ -330,7 +350,23 @@ function renderSummary() {
 
   const recs = pickRecommendations();
   el.recommendationList.innerHTML = recs
-    .map((r) => `<li><a href="${r.url}" target="_blank" rel="noopener">${escapeHtml(r.title)}</a></li>`)
+    .map((r) => {
+      const isVideo = r.kind === "video";
+      const media = isVideo
+        ? `<img src="${r.thumb}" alt="${escapeHtml(r.title)}" loading="lazy" />`
+        : `<div class="media-fallback">PDF</div>`;
+      return `
+        <li class="media-card-item">
+          <a class="media-card" href="${r.url}" target="_blank" rel="noopener">
+            <div class="media-thumb">${media}</div>
+            <div class="media-copy">
+              <span class="media-kicker">${isVideo ? "Video" : "PDF"}</span>
+              <strong>${escapeHtml(r.title)}</strong>
+            </div>
+          </a>
+        </li>
+      `;
+    })
     .join("");
 }
 
