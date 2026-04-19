@@ -153,6 +153,7 @@ const state = {
   aiDraftParsed: null,
   currentScreen: "start",
   soundOn: true,
+  mode: "light",
 };
 
 const el = {
@@ -191,6 +192,7 @@ const el = {
   savePdf: document.getElementById("save-pdf"),
   resetAll: document.getElementById("reset-all"),
   soundToggle: document.getElementById("sound-toggle"),
+  modeToggle: document.getElementById("mode-toggle"),
 };
 
 const panels = {
@@ -251,7 +253,17 @@ function resetStateToDefault() {
     aiDraftParsed: null,
     currentScreen: "start",
     soundOn: true,
+    mode: "light",
   });
+}
+
+function applyMode(mode) {
+  const normalized = mode === "dark" ? "dark" : "light";
+  state.mode = normalized;
+  document.body.setAttribute("data-mode", normalized);
+  if (el.modeToggle) {
+    el.modeToggle.textContent = normalized === "dark" ? "Ljust läge" : "Mörkt läge";
+  }
 }
 
 function setScreen(screen) {
@@ -586,6 +598,8 @@ function importJsonFile(file) {
 }
 
 function hydrateFromState() {
+  applyMode(state.mode || "light");
+
   switch (state.currentScreen) {
     case "quiz":
       renderQuestion();
@@ -770,6 +784,13 @@ el.soundToggle.addEventListener("click", () => {
   el.soundToggle.textContent = `Ljud: ${state.soundOn ? "På" : "Av"}`;
   saveState();
   playClickTone(540, 0.08);
+});
+
+el.modeToggle.addEventListener("click", () => {
+  const nextMode = state.mode === "dark" ? "light" : "dark";
+  applyMode(nextMode);
+  saveState();
+  playClickTone(nextMode === "dark" ? 640 : 540, 0.08);
 });
 
 loadState();

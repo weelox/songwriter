@@ -68,6 +68,31 @@ body[data-theme="b"] {
     );
 }
 
+body[data-mode="dark"] {
+  --bg: #0b1110;
+  --ink: #e7f0ec;
+  --muted: #a4b6b0;
+  --panel: rgba(16, 24, 22, 0.82);
+  --line: rgba(190, 223, 211, 0.2);
+  --accent: #4aa18f;
+  --accent-strong: #3a7f71;
+  --accent-soft: #1a2a26;
+  --danger: #c65d5d;
+  --shadow: 0 26px 58px rgba(0, 0, 0, 0.5);
+  background-image:
+    radial-gradient(circle at 14% -6%, rgba(74, 161, 143, 0.22) 0%, transparent 40%),
+    radial-gradient(circle at 88% 8%, rgba(58, 127, 113, 0.18) 0%, transparent 42%),
+    radial-gradient(circle at 46% 115%, rgba(74, 161, 143, 0.12) 0%, transparent 45%),
+    linear-gradient(115deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0)),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(226, 244, 237, 0.035) 0,
+      rgba(226, 244, 237, 0.035) 1px,
+      transparent 1px,
+      transparent 18px
+    );
+}
+
 .bg-glow {
   position: fixed;
   border-radius: 50%;
@@ -107,10 +132,21 @@ body[data-theme="b"] .bg-glow-2 {
 }
 
 .restart-top {
+  position: static;
+  z-index: auto;
+}
+
+.top-controls {
   position: fixed;
   top: 16px;
   right: 16px;
   z-index: 30;
+  display: flex;
+  gap: 8px;
+}
+
+.mode-top {
+  min-width: 112px;
 }
 
 .app-shell {
@@ -568,6 +604,53 @@ body[data-theme="b"] .resource-box a {
   color: #1a4a42;
 }
 
+body[data-mode="dark"] .bg-glow-1 {
+  background: #2d6257;
+}
+
+body[data-mode="dark"] .bg-glow-2 {
+  background: #1f4a42;
+}
+
+body[data-mode="dark"] .app-shell {
+  border-color: rgba(190, 223, 211, 0.26);
+  background:
+    linear-gradient(160deg, rgba(21, 33, 30, 0.82), rgba(10, 16, 14, 0.84)),
+    rgba(12, 18, 17, 0.86);
+}
+
+body[data-mode="dark"] .hero {
+  background: rgba(18, 28, 25, 0.74);
+}
+
+body[data-mode="dark"] .panel {
+  background: rgba(15, 23, 21, 0.82);
+}
+
+body[data-mode="dark"] .start-card,
+body[data-mode="dark"] .summary-item,
+body[data-mode="dark"] .assist-card,
+body[data-mode="dark"] .lyrics-preview,
+body[data-mode="dark"] .resource-box,
+body[data-mode="dark"] .media-card {
+  background: rgba(20, 30, 27, 0.82);
+}
+
+body[data-mode="dark"] .btn-ghost {
+  background: rgba(38, 58, 53, 0.8);
+  color: #e7f0ec;
+  border-color: rgba(190, 223, 211, 0.24);
+}
+
+body[data-mode="dark"] .media-fallback {
+  color: #dcece6;
+  background: linear-gradient(140deg, #31584f, #24443e);
+}
+
+body[data-mode="dark"] .resource-box a {
+  color: #8fd8c6;
+}
+
 .resource-box h4 {
   margin: 14px 0 8px;
   font-family: "Syne", sans-serif;
@@ -718,9 +801,14 @@ body[data-theme="b"] .media-fallback {
   }
 
   .restart-top {
+    width: auto;
+  }
+
+  .top-controls {
     top: 10px;
     right: 10px;
-    width: auto;
+    left: 10px;
+    justify-content: flex-end;
   }
 }
 
