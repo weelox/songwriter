@@ -41,26 +41,27 @@ body {
 }
 
 body[data-theme="b"] {
-  --bg: #f7efe5;
-  --ink: #1b1713;
-  --muted: #6a5a4f;
-  --panel: rgba(255, 247, 238, 0.86);
-  --line: rgba(27, 23, 19, 0.2);
-  --accent: #ba4a2b;
-  --accent-strong: #8f341d;
-  --accent-soft: #f4dfd1;
-  --danger: #8f1d1d;
-  --shadow: 0 20px 40px rgba(42, 29, 20, 0.13);
+  --bg: #e8ece8;
+  --ink: #101614;
+  --muted: #4f5d58;
+  --panel: rgba(248, 251, 249, 0.82);
+  --line: rgba(16, 22, 20, 0.2);
+  --accent: #23544b;
+  --accent-strong: #193c35;
+  --accent-soft: #d7e4df;
+  --danger: #7d3b3b;
+  --shadow: 0 24px 52px rgba(16, 22, 20, 0.18);
   background-image:
-    radial-gradient(circle at 18% -8%, rgba(186, 74, 43, 0.16) 0%, transparent 45%),
-    radial-gradient(circle at 92% 12%, rgba(123, 66, 43, 0.14) 0%, transparent 42%),
-    linear-gradient(112deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0)),
+    radial-gradient(circle at 14% -6%, rgba(35, 84, 75, 0.2) 0%, transparent 42%),
+    radial-gradient(circle at 88% 8%, rgba(24, 60, 53, 0.16) 0%, transparent 44%),
+    radial-gradient(circle at 46% 115%, rgba(74, 98, 91, 0.12) 0%, transparent 45%),
+    linear-gradient(115deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0)),
     repeating-linear-gradient(
       -45deg,
-      rgba(27, 23, 19, 0.03) 0,
-      rgba(27, 23, 19, 0.03) 1px,
+      rgba(16, 22, 20, 0.03) 0,
+      rgba(16, 22, 20, 0.03) 1px,
       transparent 1px,
-      transparent 20px
+      transparent 18px
     );
 }
 
@@ -89,15 +90,15 @@ body[data-theme="b"] {
 }
 
 body[data-theme="b"] .bg-glow-1 {
-  background: #c98c73;
-  top: -120px;
-  left: -130px;
+  background: #7da79b;
+  top: -150px;
+  left: -120px;
 }
 
 body[data-theme="b"] .bg-glow-2 {
-  background: #9f6a53;
-  bottom: -210px;
-  right: -110px;
+  background: #54766d;
+  bottom: -220px;
+  right: -130px;
 }
 
 .restart-top {
@@ -140,7 +141,8 @@ body[data-theme="b"] .bg-glow-2 {
 
 body[data-theme="b"] .hero h1 {
   font-size: clamp(2.1rem, 6vw, 4.3rem);
-  letter-spacing: -0.012em;
+  letter-spacing: -0.014em;
+  max-width: 12ch;
 }
 
 .style-switch {
@@ -379,15 +381,34 @@ input[type="text"]:focus {
 
 body[data-theme="b"] .app-shell {
   border-width: 2px;
-  background: rgba(255, 249, 243, 0.42);
+  border-color: rgba(16, 22, 20, 0.26);
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.58), rgba(232, 238, 235, 0.38)),
+    rgba(245, 249, 247, 0.46);
+  box-shadow: 0 30px 70px rgba(16, 22, 20, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+body[data-theme="b"] .app-shell::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(35, 84, 75, 0.75), transparent);
+  pointer-events: none;
 }
 
 body[data-theme="b"] .hero {
   border-bottom-width: 2px;
+  background: rgba(252, 255, 253, 0.64);
 }
 
 body[data-theme="b"] .panel {
   border-top-width: 2px;
+  background: rgba(248, 251, 249, 0.78);
 }
 
 body[data-theme="b"] .start-card,
@@ -400,6 +421,46 @@ body[data-theme="b"] .resource-box {
 body[data-theme="b"] .assist-card {
   border-style: solid;
   border-width: 2px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+body[data-theme="b"] .start-card,
+body[data-theme="b"] .summary-item,
+body[data-theme="b"] .lyrics-preview,
+body[data-theme="b"] .resource-box {
+  background: rgba(255, 255, 255, 0.74);
+}
+
+body[data-theme="b"] textarea:focus,
+body[data-theme="b"] input[type="text"]:focus {
+  box-shadow: 0 0 0 3px rgba(35, 84, 75, 0.18);
+}
+
+body[data-theme="b"] .random-line {
+  background: rgba(35, 84, 75, 0.14);
+}
+
+body[data-theme="b"] .btn-primary {
+  background: linear-gradient(135deg, #23544b, #1b433b);
+  box-shadow: 0 12px 28px rgba(24, 58, 51, 0.24);
+}
+
+body[data-theme="b"] .btn-primary:hover {
+  background: linear-gradient(135deg, #1b433b, #16362f);
+}
+
+body[data-theme="b"] .btn-ghost {
+  background: linear-gradient(180deg, #e8f0ec, #dce8e3);
+  border-color: rgba(16, 22, 20, 0.18);
+}
+
+body[data-theme="b"] .btn-theme.active {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+body[data-theme="b"] .resource-box a {
+  color: #1a4a42;
 }
 
 .random-line {
