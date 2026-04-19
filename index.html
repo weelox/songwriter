@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Songwriter Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <main class="app-shell">
+      <header class="hero">
+        <p class="eyebrow">Songwriter Guide</p>
+        <h1>Skriv din egen låttext steg för steg</h1>
+        <p class="lead">
+          För ungdomar som vill komma igång snabbt, skriva ärligt och förstå låtens uppbyggnad.
+        </p>
+      </header>
+
+      <section class="panel" id="quiz-panel">
+        <div class="progress-wrap">
+          <p id="step-label">Fråga 1 av 4</p>
+          <div class="progress-bar"><span id="progress-fill"></span></div>
+        </div>
+
+        <div id="question-view" class="fade-in"></div>
+      </section>
+
+      <section class="panel hidden" id="summary-panel">
+        <h2>Din låt-idé</h2>
+        <div id="summary-content" class="summary-grid"></div>
+        <div class="button-row">
+          <button id="edit-answers" class="btn btn-ghost">Ändra svar</button>
+          <button id="start-writing" class="btn btn-primary">Starta skrivandet</button>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="writing-panel">
+        <div class="writing-top">
+          <h2 id="writing-step-title">Vers 1</h2>
+          <p id="writing-step-subtitle"></p>
+        </div>
+
+        <div class="assist-card">
+          <h3>Pedagogisk hjälp</h3>
+          <p id="writing-tip"></p>
+          <div class="button-row">
+            <button id="random-line" class="btn btn-ghost">Slumpa en startmening</button>
+            <button id="sound-toggle" class="btn btn-ghost">Ljud: På</button>
+          </div>
+          <p id="random-result" class="random-line"></p>
+        </div>
+
+        <label class="field-label" for="writing-textarea">Din text</label>
+        <textarea id="writing-textarea" rows="10" placeholder="Skriv här..."></textarea>
+
+        <div class="button-row spread">
+          <button id="prev-writing" class="btn btn-ghost">Tillbaka</button>
+          <button id="next-writing" class="btn btn-primary">Nästa</button>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="final-panel">
+        <h2>Din färdiga låttext</h2>
+        <p class="lead-small">
+          Snyggt jobbat. Exportera som text, PDF eller sparfil (JSON) så du kan fortsätta senare.
+        </p>
+
+        <article class="lyrics-preview" id="lyrics-preview"></article>
+
+        <div class="button-row wrap">
+          <button id="back-to-writing" class="btn btn-ghost">Tillbaka till skrivandet</button>
+          <button id="save-json" class="btn btn-primary">Spara projektfil (.json)</button>
+          <button id="load-json-btn" class="btn btn-ghost">Ladda projektfil</button>
+          <button id="save-txt" class="btn btn-primary">Exportera .txt</button>
+          <button id="save-pdf" class="btn btn-ghost">Spara som PDF</button>
+          <button id="reset-all" class="btn btn-danger">Nollställ allt</button>
+          <input id="load-json-input" type="file" accept="application/json,.json" hidden />
+        </div>
+
+        <div class="resource-box">
+          <h3>Fortsätt lära dig låtskrivande</h3>
+          <p>
+            Relevanta klipp finns i Trainstation Learn-området. Öppna området och välj videos om
+            låtstruktur, textskrivning och känsla.
+          </p>
+          <a
+            href="https://learn.trainstation.se/areas/area/?id=87faea52-93ab-4966-8e7a-9bb3283647f6"
+            target="_blank"
+            rel="noopener"
+            >Öppna Trainstation-området</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
