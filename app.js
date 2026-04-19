@@ -155,7 +155,7 @@ const state = {
   aiDraftParsed: null,
   currentScreen: "start",
   soundOn: true,
-  mode: "light",
+  mode: "dark",
 };
 
 const el = {
@@ -255,7 +255,7 @@ function resetStateToDefault() {
     aiDraftParsed: null,
     currentScreen: "start",
     soundOn: true,
-    mode: "light",
+    mode: "dark",
   });
 }
 
@@ -722,7 +722,7 @@ function importJsonFile(file) {
 }
 
 function hydrateFromState() {
-  applyMode(state.mode || "light");
+  applyMode(state.mode || "dark");
 
   switch (state.currentScreen) {
     case "quiz":
