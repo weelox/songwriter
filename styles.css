@@ -17,7 +17,7 @@
 
 body {
   margin: 0;
-  font-family: "Ubuntu", "Segoe UI", sans-serif;
+  font-family: "Manrope", "Segoe UI", sans-serif;
   color: var(--ink);
   background-color: var(--bg);
   background-image:
@@ -40,6 +40,10 @@ body {
     );
   min-height: 100vh;
   overflow-x: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0;
 }
 
 .bg-glow {
@@ -73,12 +77,12 @@ body {
 
 .app-shell {
   width: min(980px, 92vw);
-  margin: 48px auto 80px;
+  margin: auto;
 }
 
 .hero h1 {
-  font-family: "Ubuntu", "Avenir Next", sans-serif;
-  font-weight: 700;
+  font-family: "Syne", "Avenir Next", sans-serif;
+  font-weight: 800;
   letter-spacing: -0.01em;
   margin: 10px 0;
   font-size: clamp(2rem, 6vw, 3.8rem);
@@ -136,7 +140,7 @@ body {
 
 .start-card h3 {
   margin: 0 0 8px;
-  font-family: "Ubuntu", sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 700;
 }
 
@@ -169,7 +173,7 @@ body {
 
 .question-card h2 {
   margin: 0 0 10px;
-  font-family: "Ubuntu", sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 700;
   font-size: clamp(1.4rem, 3vw, 2rem);
 }
@@ -285,7 +289,7 @@ input[type="text"]:focus {
 
 .assist-card h3 {
   margin: 0;
-  font-family: "Ubuntu", sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 700;
 }
 
@@ -336,7 +340,7 @@ input[type="text"]:focus {
 
 .resource-box h4 {
   margin: 14px 0 8px;
-  font-family: "Ubuntu", sans-serif;
+  font-family: "Syne", sans-serif;
   font-weight: 700;
 }
 
