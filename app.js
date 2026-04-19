@@ -1,4 +1,4 @@
-const STORAGE_KEY = "songwriter-guide-v1";
+const STORAGE_KEY = "songwriter-guide-v2";
 
 const questions = [
   {
@@ -16,7 +16,7 @@ const questions = [
   {
     id: "topic",
     title: "3. Vad vill du skriva om?",
-    help: "Exempelvis: Något som hänt? Någon person? Något du tänker mycket på? Något som stör dig?",
+    help: "Exempelvis: något som hänt, en person, något du tänker mycket på eller något som stör dig.",
     placeholder: "Skriv vad du vill skriva om...",
   },
 ];
@@ -26,31 +26,74 @@ const writingSteps = [
     id: "focus",
     title: "Välj en konkret sak",
     subtitle: "",
-    tip: "Välj en konkret sak: ett minne, en händelse, en mening någon sagt, eller en känsla du haft nyligen.",
+    tip: "Välj en konkret sak: ett minne, en händelse, en mening någon sagt eller en känsla du haft nyligen.",
   },
   {
     id: "verse1",
     title: "Vers 1",
     subtitle: "Berätta vad som händer och varför.",
-    tip: "Tips: Börja konkret. Vad ser du? Vad händer? Vad tänker du just då?",
+    tip: "Börja konkret: var är du, vad händer, vad känner du i stunden?",
   },
   {
     id: "chorus",
     title: "Refräng",
-    subtitle: "Kärnan i låten. Här fastnar känslan.",
-    tip: "Tips: Upprepa nyckelord, håll språket tydligt och sjungbart.",
+    subtitle: "Kärnan i låten.",
+    tip: "Håll refrängen enkel och tydlig. Upprepa gärna nyckelord.",
   },
   {
     id: "verse2",
     title: "Vers 2",
-    subtitle: "Utveckla storyn eller känslan.",
-    tip: "Tips: Visa en förändring: blev något bättre, värre eller tydligare?",
+    subtitle: "Utveckla berättelsen.",
+    tip: "Visa förändring: vad blev tydligare, bättre eller svårare?",
   },
   {
     id: "outro",
     title: "Outro/Avslut (valfritt)",
-    subtitle: "Avsluta med en sista tanke eller rad.",
-    tip: "Tips: Knyt ihop låten med en enkel slutsats eller ett starkt sista ord.",
+    subtitle: "Runda av låten.",
+    tip: "Avsluta med en sista rad som knyter ihop allt.",
+  },
+];
+
+const learnRecommendations = [
+  {
+    title: "Hur skriver man en låttext?",
+    url: "https://www.youtube.com/watch?v=aLkFddDAu4E",
+    tags: ["text", "topic", "all"],
+  },
+  {
+    title: "8 tips för att skriva en låttext",
+    url: "https://www.youtube.com/watch?v=w5taIsBBde0",
+    tags: ["text", "topic", "all"],
+  },
+  {
+    title: "How To Write A Rap",
+    url: "https://www.youtube.com/watch?v=cLUK8ob-GMQ",
+    tags: ["rap", "hiphop"],
+  },
+  {
+    title: "How To Write Lyrics For A Song",
+    url: "https://www.youtube.com/watch?v=9G4zOiWr7Kw",
+    tags: ["pop", "text", "all"],
+  },
+  {
+    title: "Skapa grunden till ditt hiphop-beat",
+    url: "https://www.youtube.com/watch?v=Zqrwri8rnsQ",
+    tags: ["rap", "hiphop", "beat"],
+  },
+  {
+    title: "Logic Pro beginner tutorial",
+    url: "https://www.youtube.com/watch?v=xKWdaSf9y5U&t=77s",
+    tags: ["pop", "rock", "produktion"],
+  },
+  {
+    title: "Text & Berättelse (PDF)",
+    url: "https://learn.trainstation.se/resources/teasers/category-3/pdf/38/bc35165ce66ee77b8373663dbfaec36d-1586496966024.pdf",
+    tags: ["text", "topic", "all", "pdf"],
+  },
+  {
+    title: "Ackord och harmonier (PDF)",
+    url: "https://learn.trainstation.se/resources/teasers/category-3/pdf/35/2a3cde8b26745accbae8a70c81810421-1586496500340.pdf",
+    tags: ["musik", "all", "pdf"],
   },
 ];
 
@@ -69,11 +112,16 @@ const state = {
     verse2: "",
     outro: "",
   },
-  currentScreen: "quiz",
+  aiDraft: "",
+  aiDraftParsed: null,
+  currentScreen: "start",
   soundOn: true,
 };
 
 const el = {
+  restartTop: document.getElementById("restart-top"),
+  startPanel: document.getElementById("start-panel"),
+  startQuiz: document.getElementById("start-quiz"),
   quizPanel: document.getElementById("quiz-panel"),
   summaryPanel: document.getElementById("summary-panel"),
   writingPanel: document.getElementById("writing-panel"),
@@ -82,6 +130,11 @@ const el = {
   stepLabel: document.getElementById("step-label"),
   progressFill: document.getElementById("progress-fill"),
   summaryContent: document.getElementById("summary-content"),
+  recommendationIntro: document.getElementById("recommendation-intro"),
+  recommendationList: document.getElementById("recommendation-list"),
+  generateAiDraft: document.getElementById("generate-ai-draft"),
+  useAiDraft: document.getElementById("use-ai-draft"),
+  aiDraftOutput: document.getElementById("ai-draft-output"),
   editAnswers: document.getElementById("edit-answers"),
   startWriting: document.getElementById("start-writing"),
   writingStepTitle: document.getElementById("writing-step-title"),
@@ -138,16 +191,28 @@ function loadState() {
     const parsed = JSON.parse(raw);
     Object.assign(state, parsed);
     state.answers = { ...state.answers, ...parsed.answers };
-    if (!state.answers.topic && parsed?.answers?.feel) state.answers.topic = parsed.answers.feel;
-    if (!state.answers.focus && parsed?.answers?.trigger) state.answers.focus = parsed.answers.trigger;
     state.lyrics = { ...state.lyrics, ...parsed.lyrics };
   } catch {
     localStorage.removeItem(STORAGE_KEY);
   }
 }
 
+function resetStateToDefault() {
+  Object.assign(state, {
+    questionIndex: 0,
+    answers: { vibe: "", genre: "", topic: "", focus: "" },
+    writingIndex: 0,
+    lyrics: { verse1: "", chorus: "", verse2: "", outro: "" },
+    aiDraft: "",
+    aiDraftParsed: null,
+    currentScreen: "start",
+    soundOn: true,
+  });
+}
+
 function setScreen(screen) {
   state.currentScreen = screen;
+  el.startPanel.classList.toggle("hidden", screen !== "start");
   el.quizPanel.classList.toggle("hidden", screen !== "quiz");
   el.summaryPanel.classList.toggle("hidden", screen !== "summary");
   el.writingPanel.classList.toggle("hidden", screen !== "writing");
@@ -166,9 +231,7 @@ function renderQuestion() {
     <article class="question-card">
       <h2>${q.title}</h2>
       <p class="question-help">${q.help}</p>
-      <input id="answer-input" type="text" placeholder="${q.placeholder}" value="${escapeHtml(
-    value
-  )}" />
+      <input id="answer-input" type="text" placeholder="${q.placeholder}" value="${escapeHtml(value)}" />
       <div class="button-row spread">
         <button id="prev-question" class="btn btn-ghost" ${
           state.questionIndex === 0 ? "disabled" : ""
@@ -209,6 +272,7 @@ function renderQuestion() {
       answerInput.style.borderColor = "#a52d2d";
       return;
     }
+
     answerInput.style.borderColor = "";
     state.answers[q.id] = text;
     playClickTone(620);
@@ -224,6 +288,22 @@ function renderQuestion() {
   });
 }
 
+function pickRecommendations() {
+  const genre = (state.answers.genre || "").toLowerCase();
+  const topic = (state.answers.topic || "").toLowerCase();
+
+  const tags = new Set(["all"]);
+  if (genre.includes("rap") || genre.includes("hiphop")) tags.add("rap");
+  if (genre.includes("pop")) tags.add("pop");
+  if (genre.includes("rock")) tags.add("rock");
+  if (topic.includes("text") || topic.includes("berätt") || topic.includes("ord")) tags.add("text");
+  if (topic.includes("beat") || topic.includes("trumma")) tags.add("beat");
+  tags.add("topic");
+
+  const selected = learnRecommendations.filter((item) => item.tags.some((tag) => tags.has(tag))).slice(0, 6);
+  return selected.length > 0 ? selected : learnRecommendations.slice(0, 4);
+}
+
 function renderSummary() {
   el.summaryContent.innerHTML = questions
     .map(
@@ -234,6 +314,15 @@ function renderSummary() {
       </div>
     `
     )
+    .join("");
+
+  el.recommendationIntro.textContent = `Baserat på dina svar (${state.answers.genre || "din genre"} / ${
+    state.answers.topic || "ditt tema"
+  }) kan du börja med dessa resurser:`;
+
+  const recs = pickRecommendations();
+  el.recommendationList.innerHTML = recs
+    .map((r) => `<li><a href="${r.url}" target="_blank" rel="noopener">${escapeHtml(r.title)}</a></li>`)
     .join("");
 }
 
@@ -246,7 +335,7 @@ function renderWritingStep() {
 
   el.writingStepTitle.textContent = step.title;
   el.writingStepSubtitle.textContent = isFocusStep
-    ? `Eftersom du har valt vibe "${vibe}" och genren "${genre}", med tema "${topic}", välj nu en konkret sak att utgå från.`
+    ? `Eftersom du valt vibe "${vibe}", genren "${genre}" och temat "${topic}" börjar vi med att välja en konkret sak.`
     : step.subtitle;
   el.writingTip.textContent = step.tip;
 
@@ -256,21 +345,17 @@ function renderWritingStep() {
     el.writingTextarea.value = state.answers.focus || "";
     el.randomLine.classList.add("hidden");
     el.randomResult.classList.add("hidden");
+    el.nextWriting.textContent = "Börja med vers 1";
   } else {
     el.writingFieldLabel.textContent = "Din text";
     el.writingTextarea.placeholder = "Skriv här...";
     el.writingTextarea.value = state.lyrics[step.id] || "";
     el.randomLine.classList.remove("hidden");
     el.randomResult.classList.remove("hidden");
+    el.nextWriting.textContent = state.writingIndex === writingSteps.length - 1 ? "Förhandsvisa låten" : "Nästa";
   }
 
   el.prevWriting.textContent = state.writingIndex === 0 ? "Till quiz" : "Tillbaka";
-  if (isFocusStep) {
-    el.nextWriting.textContent = "Börja med vers 1";
-  } else {
-    el.nextWriting.textContent =
-      state.writingIndex === writingSteps.length - 1 ? "Förhandsvisa låten" : "Nästa";
-  }
   el.randomResult.textContent = "";
 }
 
@@ -282,15 +367,10 @@ function randomStarter() {
   const step = writingSteps[state.writingIndex].id;
 
   const bank = {
-    intro: [
-      `Ikväll låter allt som ${vibe}, och jag är mitt i det.`,
-      `Det började i tystnad, men nu handlar allt om ${topic.toLowerCase()}.`,
-      `I min ${genre}-värld är sanningen enkel: ${focus}.`,
-    ],
     verse1: [
       `Jag minns exakt när allt vände, det var då ${focus}.`,
       `Steg för steg försökte jag andas, men ${vibe} tog över.`,
-      `Ingen såg vad som hände inom mig när ${focus}.`,
+      `I min ${genre}-värld började allt med ${topic.toLowerCase()}.`,
     ],
     chorus: [
       `Det här är jag, det här är ${topic.toLowerCase()}, jag gömmer inget mer.`,
@@ -313,6 +393,58 @@ function randomStarter() {
   const line = list[Math.floor(Math.random() * list.length)] || "Börja med en enkel, ärlig rad.";
   el.randomResult.textContent = line;
   playClickTone(760, 0.09);
+}
+
+function generateAiDraftFromAnswers() {
+  const vibe = state.answers.vibe || "stark";
+  const genre = state.answers.genre || "fri";
+  const topic = state.answers.topic || "livet";
+  const focus = state.answers.focus || `ett minne kopplat till ${topic}`;
+
+  const verse1 = [
+    `Det började med ${focus}, allt blev så tydligt då,`,
+    `Jag gick runt med ${vibe} i bröstet men försökte ändå stå,`,
+    `I min ${genre}-värld blev varje tanke som ett spår.`
+  ].join("\n");
+
+  const chorus = [
+    `Det här är min röst, det här är ${topic},`,
+    `Jag håller inget inne, jag skriver det jag bär på.`,
+    `Om natten blir för tung så sjunger jag ändå.`
+  ].join("\n");
+
+  const verse2 = [
+    `Nu ser jag allt från en ny vinkel, jag vågar ta plats,`,
+    `Varje rad jag skriver gör det lättare att andas,`,
+    `Jag låter sanningen höras, även när den skaver.`
+  ].join("\n");
+
+  const outro = `Jag skriver klart, tar ett djupt andetag, och går vidare.`;
+
+  return {
+    focus,
+    verse1,
+    chorus,
+    verse2,
+    outro,
+    text: [
+      `AI-utkast (${genre})`,
+      `Vibe: ${vibe}`,
+      `Tema: ${topic}`,
+      ``,
+      `VERS 1`,
+      verse1,
+      ``,
+      `REFRÄNG`,
+      chorus,
+      ``,
+      `VERS 2`,
+      verse2,
+      ``,
+      `OUTRO`,
+      outro,
+    ].join("\n"),
+  };
 }
 
 function buildSongText() {
@@ -390,6 +522,10 @@ function importJsonFile(file) {
 
 function hydrateFromState() {
   switch (state.currentScreen) {
+    case "quiz":
+      renderQuestion();
+      setScreen("quiz");
+      break;
     case "summary":
       renderSummary();
       setScreen("summary");
@@ -403,16 +539,15 @@ function hydrateFromState() {
       setScreen("final");
       break;
     default:
-      state.currentScreen = "quiz";
-      renderQuestion();
-      setScreen("quiz");
+      state.currentScreen = "start";
+      setScreen("start");
   }
 
   el.soundToggle.textContent = `Ljud: ${state.soundOn ? "På" : "Av"}`;
 }
 
 function escapeHtml(value) {
-  return value
+  return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -420,11 +555,55 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function hardReset() {
+  if (!confirm("Är du säker på att du vill börja om från början?")) return;
+
+  localStorage.removeItem(STORAGE_KEY);
+  resetStateToDefault();
+  el.aiDraftOutput.classList.add("hidden");
+  el.useAiDraft.classList.add("hidden");
+  el.aiDraftOutput.textContent = "";
+  setScreen("start");
+  playClickTone(380, 0.12);
+}
+
+el.restartTop.addEventListener("click", hardReset);
+el.startQuiz.addEventListener("click", () => {
+  playClickTone(610);
+  state.questionIndex = 0;
+  renderQuestion();
+  setScreen("quiz");
+});
+
 el.editAnswers.addEventListener("click", () => {
   playClickTone(430);
   state.questionIndex = 0;
   renderQuestion();
   setScreen("quiz");
+});
+
+el.generateAiDraft.addEventListener("click", () => {
+  const draft = generateAiDraftFromAnswers();
+  state.aiDraft = draft.text;
+  state.aiDraftParsed = draft;
+  el.aiDraftOutput.textContent = draft.text;
+  el.aiDraftOutput.classList.remove("hidden");
+  el.useAiDraft.classList.remove("hidden");
+  saveState();
+  playClickTone(760, 0.1);
+});
+
+el.useAiDraft.addEventListener("click", () => {
+  if (!state.aiDraftParsed) return;
+  state.answers.focus = state.aiDraftParsed.focus;
+  state.lyrics.verse1 = state.aiDraftParsed.verse1;
+  state.lyrics.chorus = state.aiDraftParsed.chorus;
+  state.lyrics.verse2 = state.aiDraftParsed.verse2;
+  state.lyrics.outro = state.aiDraftParsed.outro;
+  state.writingIndex = 0;
+  renderWritingStep();
+  setScreen("writing");
+  playClickTone(710, 0.1);
 });
 
 el.startWriting.addEventListener("click", () => {
@@ -519,24 +698,7 @@ el.savePdf.addEventListener("click", () => {
   playClickTone(660, 0.08);
 });
 
-el.resetAll.addEventListener("click", () => {
-  if (!confirm("Är du säker på att du vill nollställa allt?")) return;
-
-  localStorage.removeItem(STORAGE_KEY);
-  Object.assign(state, {
-    questionIndex: 0,
-    answers: { vibe: "", genre: "", topic: "", focus: "" },
-    writingIndex: 0,
-    lyrics: { verse1: "", chorus: "", verse2: "", outro: "" },
-    currentScreen: "quiz",
-    soundOn: true,
-  });
-
-  renderQuestion();
-  setScreen("quiz");
-  el.soundToggle.textContent = "Ljud: På";
-  playClickTone(380, 0.12);
-});
+el.resetAll.addEventListener("click", hardReset);
 
 el.soundToggle.addEventListener("click", () => {
   state.soundOn = !state.soundOn;

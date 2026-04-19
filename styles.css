@@ -2,7 +2,7 @@
   --bg: #f3f0ea;
   --ink: #171717;
   --muted: #5b5a57;
-  --panel: rgba(255, 255, 255, 0.74);
+  --panel: rgba(255, 255, 255, 0.76);
   --accent: #e9573f;
   --accent-2: #0f8a7d;
   --danger: #a52d2d;
@@ -47,8 +47,15 @@ body {
   left: -130px;
 }
 
+.restart-top {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+}
+
 .app-shell {
-  width: min(900px, 92vw);
+  width: min(980px, 92vw);
   margin: 48px auto 80px;
 }
 
@@ -95,6 +102,24 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.start-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.start-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(23, 23, 23, 0.1);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.start-card h3 {
+  margin: 0 0 8px;
+  font-family: "Syne", sans-serif;
 }
 
 .progress-wrap {
@@ -175,6 +200,10 @@ input[type="text"]:focus {
   font: inherit;
   cursor: pointer;
   transition: transform 0.14s ease, box-shadow 0.14s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn:hover {
@@ -195,6 +224,10 @@ input[type="text"]:focus {
 .btn-danger {
   background: var(--danger);
   color: white;
+}
+
+.btn-link {
+  width: fit-content;
 }
 
 .hidden {
@@ -223,7 +256,7 @@ input[type="text"]:focus {
   border: 1px dashed rgba(23, 23, 23, 0.2);
   border-radius: 14px;
   padding: 14px;
-  margin: 8px 0 14px;
+  margin: 14px 0;
 }
 
 .assist-card h3 {
@@ -255,6 +288,8 @@ input[type="text"]:focus {
   padding: 16px;
   white-space: pre-wrap;
   line-height: 1.55;
+  max-height: 380px;
+  overflow: auto;
 }
 
 .lead-small {
@@ -289,17 +324,17 @@ input[type="text"]:focus {
   line-height: 1.35;
 }
 
-.resource-footnote {
-  margin-top: 12px;
-}
-
 .fade-in {
   animation: rise 0.25s ease;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 760px) {
   .panel {
     padding: 18px;
+  }
+
+  .start-grid {
+    grid-template-columns: 1fr;
   }
 
   .button-row {
@@ -308,6 +343,12 @@ input[type="text"]:focus {
 
   .btn {
     width: 100%;
+  }
+
+  .restart-top {
+    top: 10px;
+    right: 10px;
+    width: auto;
   }
 }
 
@@ -319,9 +360,11 @@ input[type="text"]:focus {
   .hero,
   .button-row,
   .resource-box,
+  #start-panel,
   #quiz-panel,
   #summary-panel,
-  #writing-panel {
+  #writing-panel,
+  #restart-top {
     display: none !important;
   }
 

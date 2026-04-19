@@ -13,30 +13,68 @@
     <div class="bg-glow bg-glow-1"></div>
     <div class="bg-glow bg-glow-2"></div>
 
+    <button id="restart-top" class="btn btn-danger restart-top" title="Börja om">Börja om</button>
+
     <main class="app-shell">
       <header class="hero">
         <p class="eyebrow">Songwriter Guide</p>
-        <h1>Skriv din egen låttext steg för steg</h1>
-        <p class="lead">
-          För ungdomar som vill komma igång snabbt, skriva ärligt och förstå låtens uppbyggnad.
-        </p>
+        <h1>Skriv din egen låttext</h1>
+        <p class="lead">En enkel guide för att komma igång, hitta din känsla och bygga en tydlig låtstruktur.</p>
       </header>
 
-      <section class="panel" id="quiz-panel">
+      <section class="panel" id="start-panel">
+        <h2>Välj vad du vill göra</h2>
+        <div class="start-grid">
+          <article class="start-card">
+            <h3>Skriv en låt</h3>
+            <p>Gå igenom quizet och börja skriva steg för steg.</p>
+            <button id="start-quiz" class="btn btn-primary">Starta quiz</button>
+          </article>
+          <article class="start-card">
+            <h3>Få låtskrivarhjälp</h3>
+            <p>Titta på klipp och skill-häften från Learn för att få idéer och teknik.</p>
+            <a
+              class="btn btn-ghost btn-link"
+              href="https://learn.trainstation.se/areas/area/?id=87faea52-93ab-4966-8e7a-9bb3283647f6"
+              target="_blank"
+              rel="noopener"
+              >Öppna Learn-resurser</a
+            >
+          </article>
+        </div>
+      </section>
+
+      <section class="panel hidden" id="quiz-panel">
         <div class="progress-wrap">
-          <p id="step-label">Fråga 1 av 4</p>
+          <p id="step-label">Fråga 1 av 3</p>
           <div class="progress-bar"><span id="progress-fill"></span></div>
         </div>
-
         <div id="question-view" class="fade-in"></div>
       </section>
 
       <section class="panel hidden" id="summary-panel">
         <h2>Din låt-idé</h2>
         <div id="summary-content" class="summary-grid"></div>
-        <div class="button-row">
+
+        <section class="assist-card">
+          <h3>AI-utkast utifrån dina svar</h3>
+          <p>Du kan få ett första textutkast direkt och sedan redigera det i skrivstegen.</p>
+          <div class="button-row wrap">
+            <button id="generate-ai-draft" class="btn btn-primary">Generera AI-utkast</button>
+            <button id="use-ai-draft" class="btn btn-ghost hidden">Använd utkast i skrivstegen</button>
+          </div>
+          <pre id="ai-draft-output" class="lyrics-preview hidden"></pre>
+        </section>
+
+        <section class="assist-card">
+          <h3>Videotips för dig</h3>
+          <p id="recommendation-intro"></p>
+          <ul id="recommendation-list" class="resource-list"></ul>
+        </section>
+
+        <div class="button-row wrap">
           <button id="edit-answers" class="btn btn-ghost">Ändra svar</button>
-          <button id="start-writing" class="btn btn-primary">Starta skrivandet</button>
+          <button id="start-writing" class="btn btn-primary">Fortsätt till skrivandet</button>
         </div>
       </section>
 
@@ -47,10 +85,10 @@
         </div>
 
         <div class="assist-card">
-          <h3>Pedagogisk hjälp</h3>
+          <h3>Skrivstöd</h3>
           <p id="writing-tip"></p>
           <div class="button-row">
-            <button id="random-line" class="btn btn-ghost">Slumpa en startmening</button>
+            <button id="random-line" class="btn btn-ghost">Ge mig en startrad</button>
             <button id="sound-toggle" class="btn btn-ghost">Ljud: På</button>
           </div>
           <p id="random-result" class="random-line"></p>
@@ -67,9 +105,7 @@
 
       <section class="panel hidden" id="final-panel">
         <h2>Din färdiga låttext</h2>
-        <p class="lead-small">
-          Snyggt jobbat. Exportera som text, PDF eller sparfil (JSON) så du kan fortsätta senare.
-        </p>
+        <p class="lead-small">Snyggt jobbat. Exportera, spara och fortsätt senare om du vill.</p>
 
         <article class="lyrics-preview" id="lyrics-preview"></article>
 
@@ -85,94 +121,25 @@
 
         <div class="resource-box">
           <h3>Fortsätt lära dig låtskrivande</h3>
-          <p>Direktlänkar till relevanta klipp och skill-häften från området:</p>
+          <p>Direktlänkar till klipp och skill-häften:</p>
           <h4>Klipp om text och låtskrivning</h4>
           <ul class="resource-list">
-            <li>
-              <a href="https://www.youtube.com/watch?v=aLkFddDAu4E" target="_blank" rel="noopener"
-                >Hur skriver man en LÅTTEXT?</a
-              >
-            </li>
-            <li>
-              <a href="https://www.youtube.com/watch?v=w5taIsBBde0" target="_blank" rel="noopener"
-                >8 TIPS FÖR ATT SKRIVA EN LÅTTEXT</a
-              >
-            </li>
-            <li>
-              <a href="https://www.youtube.com/watch?v=c8bdDYAvyBc" target="_blank" rel="noopener"
-                >Hur skriver man en låt? 15 min crash course</a
-              >
-            </li>
-            <li>
-              <a href="https://www.youtube.com/watch?v=cLUK8ob-GMQ" target="_blank" rel="noopener"
-                >How To Write A Rap: First Verse Step-by-Step</a
-              >
-            </li>
-            <li>
-              <a href="https://www.youtube.com/watch?v=owNbrxOGyeU" target="_blank" rel="noopener"
-                >10 Lyric Writing Tips for Beginners</a
-              >
-            </li>
-            <li>
-              <a href="https://www.youtube.com/watch?v=9G4zOiWr7Kw" target="_blank" rel="noopener"
-                >How To Write Lyrics For A Song</a
-              >
-            </li>
+            <li><a href="https://www.youtube.com/watch?v=aLkFddDAu4E" target="_blank" rel="noopener">Hur skriver man en LÅTTEXT?</a></li>
+            <li><a href="https://www.youtube.com/watch?v=w5taIsBBde0" target="_blank" rel="noopener">8 tips för att skriva en låttext</a></li>
+            <li><a href="https://www.youtube.com/watch?v=c8bdDYAvyBc" target="_blank" rel="noopener">Hur skriver man en låt? Crash course</a></li>
+            <li><a href="https://www.youtube.com/watch?v=cLUK8ob-GMQ" target="_blank" rel="noopener">How To Write A Rap</a></li>
+            <li><a href="https://www.youtube.com/watch?v=owNbrxOGyeU" target="_blank" rel="noopener">10 Lyric Writing Tips for Beginners</a></li>
+            <li><a href="https://www.youtube.com/watch?v=9G4zOiWr7Kw" target="_blank" rel="noopener">How To Write Lyrics For A Song</a></li>
           </ul>
 
           <h4>Skill-häften (PDF)</h4>
           <ul class="resource-list">
-            <li>
-              <a
-                href="https://learn.trainstation.se/resources/teasers/category-3/pdf/38/bc35165ce66ee77b8373663dbfaec36d-1586496966024.pdf"
-                target="_blank"
-                rel="noopener"
-                >Text & Berättelse (PDF)</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://learn.trainstation.se/resources/teasers/category-3/pdf/35/2a3cde8b26745accbae8a70c81810421-1586496500340.pdf"
-                target="_blank"
-                rel="noopener"
-                >Ackord och Harmonier (PDF)</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://learn.trainstation.se/resources/teasers/category-3/pdf/34/da7d0dad2a7895b0d2b36a492c9808b1-1586495714260.pdf"
-                target="_blank"
-                rel="noopener"
-                >Trummor (PDF)</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://learn.trainstation.se/resources/teasers/category-3/pdf/36/4759b91b8a2011cf6fe8f5526c861a15-1586496584791.pdf"
-                target="_blank"
-                rel="noopener"
-                >Bas (PDF)</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://learn.trainstation.se/resources/teasers/category-3/pdf/40/9d3c09283454035ba1d3276f65ea722c-1586497749705.pdf"
-                target="_blank"
-                rel="noopener"
-                >Spela in röst/sång (PDF)</a
-              >
-            </li>
+            <li><a href="https://learn.trainstation.se/resources/teasers/category-3/pdf/38/bc35165ce66ee77b8373663dbfaec36d-1586496966024.pdf" target="_blank" rel="noopener">Text & Berättelse</a></li>
+            <li><a href="https://learn.trainstation.se/resources/teasers/category-3/pdf/35/2a3cde8b26745accbae8a70c81810421-1586496500340.pdf" target="_blank" rel="noopener">Ackord och harmonier</a></li>
+            <li><a href="https://learn.trainstation.se/resources/teasers/category-3/pdf/34/da7d0dad2a7895b0d2b36a492c9808b1-1586495714260.pdf" target="_blank" rel="noopener">Trummor</a></li>
+            <li><a href="https://learn.trainstation.se/resources/teasers/category-3/pdf/36/4759b91b8a2011cf6fe8f5526c861a15-1586496584791.pdf" target="_blank" rel="noopener">Bas</a></li>
+            <li><a href="https://learn.trainstation.se/resources/teasers/category-3/pdf/40/9d3c09283454035ba1d3276f65ea722c-1586497749705.pdf" target="_blank" rel="noopener">Spela in röst/sång</a></li>
           </ul>
-
-          <p class="resource-footnote">
-            Vill du se hela biblioteket i Learn:
-            <a
-              href="https://learn.trainstation.se/areas/area/?id=87faea52-93ab-4966-8e7a-9bb3283647f6"
-              target="_blank"
-              rel="noopener"
-              >öppna området här</a
-            >.
-          </p>
         </div>
       </section>
     </main>
