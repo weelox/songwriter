@@ -673,7 +673,7 @@ body[data-mode="dark"] .resource-box a {
   line-height: 1.35;
 }
 
-#recommendation-list.resource-list {
+.media-board.resource-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
@@ -768,7 +768,7 @@ body[data-theme="b"] .media-fallback {
     grid-template-columns: 1fr;
   }
 
-  #recommendation-list.resource-list {
+  .media-board.resource-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -798,7 +798,7 @@ body[data-theme="b"] .media-fallback {
     flex-wrap: wrap;
   }
 
-  #recommendation-list.resource-list {
+  .media-board.resource-list {
     grid-template-columns: 1fr;
   }
 
