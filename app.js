@@ -116,6 +116,7 @@ const state = {
   aiDraftParsed: null,
   currentScreen: "start",
   soundOn: true,
+  theme: "a",
 };
 
 const el = {
@@ -155,6 +156,8 @@ const el = {
   savePdf: document.getElementById("save-pdf"),
   resetAll: document.getElementById("reset-all"),
   soundToggle: document.getElementById("sound-toggle"),
+  themeA: document.getElementById("theme-a"),
+  themeB: document.getElementById("theme-b"),
 };
 
 const audioCtx = window.AudioContext ? new AudioContext() : null;
@@ -207,7 +210,16 @@ function resetStateToDefault() {
     aiDraftParsed: null,
     currentScreen: "start",
     soundOn: true,
+    theme: "a",
   });
+}
+
+function applyTheme(theme) {
+  const normalizedTheme = theme === "b" ? "b" : "a";
+  state.theme = normalizedTheme;
+  document.body.setAttribute("data-theme", normalizedTheme);
+  el.themeA.classList.toggle("active", normalizedTheme === "a");
+  el.themeB.classList.toggle("active", normalizedTheme === "b");
 }
 
 function setScreen(screen) {
@@ -521,6 +533,8 @@ function importJsonFile(file) {
 }
 
 function hydrateFromState() {
+  applyTheme(state.theme || "a");
+
   switch (state.currentScreen) {
     case "quiz":
       renderQuestion();
@@ -705,6 +719,18 @@ el.soundToggle.addEventListener("click", () => {
   el.soundToggle.textContent = `Ljud: ${state.soundOn ? "På" : "Av"}`;
   saveState();
   playClickTone(540, 0.08);
+});
+
+el.themeA.addEventListener("click", () => {
+  applyTheme("a");
+  saveState();
+  playClickTone(510, 0.07);
+});
+
+el.themeB.addEventListener("click", () => {
+  applyTheme("b");
+  saveState();
+  playClickTone(570, 0.07);
 });
 
 loadState();

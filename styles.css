@@ -40,6 +40,30 @@ body {
   overflow-x: hidden;
 }
 
+body[data-theme="b"] {
+  --bg: #f7efe5;
+  --ink: #1b1713;
+  --muted: #6a5a4f;
+  --panel: rgba(255, 247, 238, 0.86);
+  --line: rgba(27, 23, 19, 0.2);
+  --accent: #ba4a2b;
+  --accent-strong: #8f341d;
+  --accent-soft: #f4dfd1;
+  --danger: #8f1d1d;
+  --shadow: 0 20px 40px rgba(42, 29, 20, 0.13);
+  background-image:
+    radial-gradient(circle at 18% -8%, rgba(186, 74, 43, 0.16) 0%, transparent 45%),
+    radial-gradient(circle at 92% 12%, rgba(123, 66, 43, 0.14) 0%, transparent 42%),
+    linear-gradient(112deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0)),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(27, 23, 19, 0.03) 0,
+      rgba(27, 23, 19, 0.03) 1px,
+      transparent 1px,
+      transparent 20px
+    );
+}
+
 .bg-glow {
   position: fixed;
   border-radius: 50%;
@@ -62,6 +86,18 @@ body {
   background: #6f9489;
   bottom: -190px;
   right: -140px;
+}
+
+body[data-theme="b"] .bg-glow-1 {
+  background: #c98c73;
+  top: -120px;
+  left: -130px;
+}
+
+body[data-theme="b"] .bg-glow-2 {
+  background: #9f6a53;
+  bottom: -210px;
+  right: -110px;
 }
 
 .restart-top {
@@ -100,6 +136,26 @@ body {
   margin: 0;
   color: var(--accent);
   font-size: 0.74rem;
+}
+
+body[data-theme="b"] .hero h1 {
+  font-size: clamp(2.1rem, 6vw, 4.3rem);
+  letter-spacing: -0.012em;
+}
+
+.style-switch {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.style-switch span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
 }
 
 .panel {
@@ -265,6 +321,20 @@ input[type="text"]:focus {
   width: fit-content;
 }
 
+.btn-theme {
+  min-width: 44px;
+  padding: 7px 12px;
+  background: transparent;
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.btn-theme.active {
+  background: var(--ink);
+  color: #ffffff;
+  border-color: var(--ink);
+}
+
 .hidden {
   display: none;
 }
@@ -305,6 +375,31 @@ input[type="text"]:focus {
 
 .assist-card p {
   line-height: 1.5;
+}
+
+body[data-theme="b"] .app-shell {
+  border-width: 2px;
+  background: rgba(255, 249, 243, 0.42);
+}
+
+body[data-theme="b"] .hero {
+  border-bottom-width: 2px;
+}
+
+body[data-theme="b"] .panel {
+  border-top-width: 2px;
+}
+
+body[data-theme="b"] .start-card,
+body[data-theme="b"] .summary-item,
+body[data-theme="b"] .lyrics-preview,
+body[data-theme="b"] .resource-box {
+  border-width: 2px;
+}
+
+body[data-theme="b"] .assist-card {
+  border-style: solid;
+  border-width: 2px;
 }
 
 .random-line {
@@ -395,6 +490,12 @@ input[type="text"]:focus {
 
   .start-grid {
     grid-template-columns: 1fr;
+  }
+
+  .style-switch {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
   }
 
   .button-row {
