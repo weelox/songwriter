@@ -511,6 +511,55 @@ function sectionFrom(text, startLabel, endLabel) {
   return chunk.trim();
 }
 
+function cleanSectionLines(sectionText, maxLines = 3) {
+  return String(sectionText || "")
+    .replace(/```[\s\S]*?```/g, "")
+    .replace(/\\n/g, "\n")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .filter((line) => !/^<rad/i.test(line))
+    .filter(
+      (line) =>
+        !/(no titles|no explanations|must comply|they want|let's|example|placeholder|format|swedish as language)/i.test(
+          line
+        )
+    )
+    .slice(0, maxLines);
+}
+
+function buildFallbackDraft() {
+  const vibe = state.answers.vibe || "stark";
+  const genre = state.answers.genre || "fri";
+  const topic = state.answers.topic || "livet";
+  const focus = state.answers.focus || `ett minne kopplat till ${topic}`;
+
+  const verse1 = [
+    `Det började med ${focus}, allt blev så tydligt då.`,
+    `Jag gick runt med ${vibe} i bröstet men försökte ändå stå.`,
+    `I min ${genre}-värld blev varje tanke som ett spår.`,
+  ];
+  const chorus = [
+    `Det här är min röst, det här är ${topic}.`,
+    `Jag håller inget inne, jag skriver det jag bär på.`,
+    `Om natten blir för tung så sjunger jag ändå.`,
+  ];
+  const verse2 = [
+    `Nu ser jag allt från en ny vinkel, jag vågar ta plats.`,
+    `Varje rad jag skriver gör det lättare att andas.`,
+    `Jag låter sanningen höras, även när den skaver.`,
+  ];
+  const outro = [`Jag skriver klart, tar ett djupt andetag, och går vidare.`];
+
+  return {
+    focus,
+    verse1: verse1.join("\n"),
+    chorus: chorus.join("\n"),
+    verse2: verse2.join("\n"),
+    outro: outro.join("\n"),
+  };
+}
+
 function parseAiDraft(rawText) {
   const text = String(rawText || "")
     .replace(/FOCUS\s*:/gi, "FOCUS:")
@@ -520,18 +569,31 @@ function parseAiDraft(rawText) {
     .replace(/CHORUS\s*:/gi, "REFRÄNG:")
     .replace(/VERSE1\s*:/gi, "VERS1:")
     .replace(/VERSE2\s*:/gi, "VERS2:");
-  const focus = sectionFrom(text, "FOCUS:", "VERS1:") || `ett minne kopplat till ${state.answers.topic || "din känsla"}`;
-  const verse1 = sectionFrom(text, "VERS1:", "REFRÄNG:") || "";
-  const chorus = sectionFrom(text, "REFRÄNG:", "VERS2:") || "";
-  const verse2 = sectionFrom(text, "VERS2:", "OUTRO:") || "";
-  const outro = sectionFrom(text, "OUTRO:", "") || "";
+  const fallback = buildFallbackDraft();
+
+  const focusRaw = sectionFrom(text, "FOCUS:", "VERS1:");
+  const verse1Raw = sectionFrom(text, "VERS1:", "REFRÄNG:");
+  const chorusRaw = sectionFrom(text, "REFRÄNG:", "VERS2:");
+  const verse2Raw = sectionFrom(text, "VERS2:", "OUTRO:");
+  const outroRaw = sectionFrom(text, "OUTRO:", "");
+
+  const focusLine = cleanSectionLines(focusRaw, 1)[0] || fallback.focus;
+  const verse1Lines = cleanSectionLines(verse1Raw, 3);
+  const chorusLines = cleanSectionLines(chorusRaw, 3);
+  const verse2Lines = cleanSectionLines(verse2Raw, 3);
+  const outroLines = cleanSectionLines(outroRaw, 1);
+
+  const verse1 = (verse1Lines.length > 0 ? verse1Lines : fallback.verse1.split("\n")).join("\n");
+  const chorus = (chorusLines.length > 0 ? chorusLines : fallback.chorus.split("\n")).join("\n");
+  const verse2 = (verse2Lines.length > 0 ? verse2Lines : fallback.verse2.split("\n")).join("\n");
+  const outro = (outroLines.length > 0 ? outroLines : fallback.outro.split("\n")).join("\n");
 
   const genre = state.answers.genre || "fri";
   const vibe = state.answers.vibe || "-";
   const topic = state.answers.topic || "-";
 
   return {
-    focus,
+    focus: focusLine,
     verse1,
     chorus,
     verse2,
