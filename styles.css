@@ -145,21 +145,6 @@ body[data-theme="b"] .hero h1 {
   max-width: 12ch;
 }
 
-.style-switch {
-  margin-top: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.style-switch span {
-  color: var(--muted);
-  font-size: 0.84rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.09em;
-}
-
 .panel {
   margin: 0;
   background: var(--panel);
@@ -323,20 +308,6 @@ input[type="text"]:focus {
   width: fit-content;
 }
 
-.btn-theme {
-  min-width: 44px;
-  padding: 7px 12px;
-  background: transparent;
-  border-color: var(--line);
-  color: var(--ink);
-}
-
-.btn-theme.active {
-  background: var(--ink);
-  color: #ffffff;
-  border-color: var(--ink);
-}
-
 .hidden {
   display: none;
 }
@@ -454,11 +425,6 @@ body[data-theme="b"] .btn-ghost {
   border-color: rgba(16, 22, 20, 0.18);
 }
 
-body[data-theme="b"] .btn-theme.active {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
 body[data-theme="b"] .resource-box a {
   color: #1a4a42;
 }
@@ -551,12 +517,6 @@ body[data-theme="b"] .resource-box a {
 
   .start-grid {
     grid-template-columns: 1fr;
-  }
-
-  .style-switch {
-    display: flex;
-    width: 100%;
-    justify-content: flex-start;
   }
 
   .button-row {
